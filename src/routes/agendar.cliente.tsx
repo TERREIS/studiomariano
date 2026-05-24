@@ -449,12 +449,9 @@ function ClienteWizard() {
             </p>
 
             <div className="grid max-w-xl gap-4">
-              <input
-                placeholder="Nome completo"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                className="border border-brand-charcoal/15 bg-white px-4 py-3 text-sm focus:border-brand-gold focus:outline-none"
-              />
+              <div className="border border-brand-charcoal/15 bg-stone-50 px-4 py-3 text-sm text-stone-600">
+                Nome: <strong className="text-brand-charcoal">{nome}</strong>
+              </div>
               <input
                 placeholder="Telefone / WhatsApp"
                 value={telefone}
@@ -487,7 +484,10 @@ function ClienteWizard() {
             </div>
           </div>
         )}
+        </>
+        )}
       </section>
+
     </div>
   );
 }

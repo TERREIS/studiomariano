@@ -388,13 +388,15 @@ function ClienteWizard() {
                 <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
                   {HORAS.map((h) => {
                     const taken = ocupados.has(h);
+                    const conflito = conflitosCliente.has(h);
+                    const indisponivel = taken || conflito;
                     return (
                       <button
                         key={h}
-                        disabled={taken}
+                        disabled={indisponivel}
                         onClick={() => setHora(h)}
                         className={`border px-3 py-3 text-sm font-medium transition-colors ${
-                          taken
+                          indisponivel
                             ? "cursor-not-allowed border-brand-charcoal/5 bg-stone-100 text-stone-400 line-through"
                             : hora === h
                             ? "border-brand-gold bg-brand-gold text-white"
@@ -406,8 +408,14 @@ function ClienteWizard() {
                     );
                   })}
                 </div>
+                {(ocupados.size > 0 || conflitosCliente.size > 0) && (
+                  <p className="mt-3 text-xs italic text-stone-500">
+                    O horário dessa integrante da equipe não está disponível.
+                  </p>
+                )}
               </div>
             )}
+
 
             <div className="flex justify-between">
               <button

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/agendar")({
+export const Route = createFileRoute("/agendar/")({
   head: () => ({
     meta: [
       { title: "Agendar — Studio Mariano" },

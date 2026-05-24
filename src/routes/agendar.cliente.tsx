@@ -98,6 +98,7 @@ function ClienteWizard() {
   const [enviando, setEnviando] = useState(false);
 
   const [ocupados, setOcupados] = useState<Set<string>>(new Set());
+  const [conflitosCliente, setConflitosCliente] = useState<Set<string>>(new Set());
 
   const dias = useMemo(buildDays, []);
 
@@ -113,7 +114,6 @@ function ClienteWizard() {
       });
   }, []);
 
-  // Buscar horários ocupados quando profissional + data definidos
   useEffect(() => {
     if (!prof || !data) return;
     supabase
@@ -124,12 +124,29 @@ function ClienteWizard() {
       .then(({ data: rows }) => {
         const set = new Set<string>();
         (rows ?? []).forEach((r: any) => {
-          // r.hora vem como "HH:MM:SS"
           set.add(String(r.hora).slice(0, 5));
         });
         setOcupados(set);
       });
   }, [prof, data]);
+
+  // Conflito do próprio cliente em outra profissional, mesma data/hora
+  useEffect(() => {
+    if (!data || !nome.trim()) {
+      setConflitosCliente(new Set());
+      return;
+    }
+    supabase
+      .from("agendamentos")
+      .select("hora")
+      .eq("data", data)
+      .ilike("cliente_nome", nome.trim())
+      .then(({ data: rows }) => {
+        const set = new Set<string>();
+        (rows ?? []).forEach((r: any) => set.add(String(r.hora).slice(0, 5)));
+        setConflitosCliente(set);
+      });
+  }, [data, nome]);
 
   async function confirmar() {
     if (!prof || !servico || !data || !hora || !nome || !telefone) {
@@ -201,6 +218,30 @@ function ClienteWizard() {
       </nav>
 
       <section className="container mx-auto max-w-4xl px-6 py-12 md:px-8 md:py-20">
+        {!nome.trim() ? (
+          <div className="mx-auto max-w-lg">
+            <h2 className="mb-3 font-serif text-3xl md:text-4xl">Bem-vinda(o)</h2>
+            <p className="mb-8 text-sm font-light text-stone-600">
+              Antes de começar, nos diga seu nome completo. Usamos para confirmar seu agendamento.
+            </p>
+            <input
+              autoFocus
+              placeholder="Nome completo"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              className="w-full border border-brand-charcoal/15 bg-white px-4 py-3 text-sm focus:border-brand-gold focus:outline-none"
+            />
+            <button
+              disabled={nome.trim().split(/\s+/).length < 2}
+              onClick={() => setStep(1)}
+              className="mt-6 w-full bg-brand-charcoal px-6 py-4 text-xs font-semibold uppercase tracking-widest text-brand-cream transition-colors hover:bg-brand-gold disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              Continuar →
+            </button>
+            <p className="mt-3 text-[11px] text-stone-500">Informe nome e sobrenome.</p>
+          </div>
+        ) : (
+        <>
         {/* Stepper */}
         <div className="mb-12 flex items-center justify-between">
           {["Profissional", "Serviço", "Horário", "Dados"].map((label, i) => {
@@ -232,6 +273,10 @@ function ClienteWizard() {
             );
           })}
         </div>
+        <p className="mb-6 text-xs uppercase tracking-widest text-stone-500">
+          Cliente: <span className="text-brand-charcoal">{nome}</span>
+        </p>
+
 
         {step === 1 && (
           <div>
@@ -343,13 +388,15 @@ function ClienteWizard() {
                 <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
                   {HORAS.map((h) => {
                     const taken = ocupados.has(h);
+                    const conflito = conflitosCliente.has(h);
+                    const indisponivel = taken || conflito;
                     return (
                       <button
                         key={h}
-                        disabled={taken}
+                        disabled={indisponivel}
                         onClick={() => setHora(h)}
                         className={`border px-3 py-3 text-sm font-medium transition-colors ${
-                          taken
+                          indisponivel
                             ? "cursor-not-allowed border-brand-charcoal/5 bg-stone-100 text-stone-400 line-through"
                             : hora === h
                             ? "border-brand-gold bg-brand-gold text-white"
@@ -361,8 +408,14 @@ function ClienteWizard() {
                     );
                   })}
                 </div>
+                {(ocupados.size > 0 || conflitosCliente.size > 0) && (
+                  <p className="mt-3 text-xs italic text-stone-500">
+                    O horário dessa integrante da equipe não está disponível.
+                  </p>
+                )}
               </div>
             )}
+
 
             <div className="flex justify-between">
               <button
@@ -396,12 +449,9 @@ function ClienteWizard() {
             </p>
 
             <div className="grid max-w-xl gap-4">
-              <input
-                placeholder="Nome completo"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                className="border border-brand-charcoal/15 bg-white px-4 py-3 text-sm focus:border-brand-gold focus:outline-none"
-              />
+              <div className="border border-brand-charcoal/15 bg-stone-50 px-4 py-3 text-sm text-stone-600">
+                Nome: <strong className="text-brand-charcoal">{nome}</strong>
+              </div>
               <input
                 placeholder="Telefone / WhatsApp"
                 value={telefone}
@@ -434,7 +484,10 @@ function ClienteWizard() {
             </div>
           </div>
         )}
+        </>
+        )}
       </section>
+
     </div>
   );
 }

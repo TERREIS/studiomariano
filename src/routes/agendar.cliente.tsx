@@ -98,6 +98,7 @@ function ClienteWizard() {
   const [enviando, setEnviando] = useState(false);
 
   const [ocupados, setOcupados] = useState<Set<string>>(new Set());
+  const [conflitosCliente, setConflitosCliente] = useState<Set<string>>(new Set());
 
   const dias = useMemo(buildDays, []);
 
@@ -113,7 +114,6 @@ function ClienteWizard() {
       });
   }, []);
 
-  // Buscar horários ocupados quando profissional + data definidos
   useEffect(() => {
     if (!prof || !data) return;
     supabase
@@ -124,12 +124,29 @@ function ClienteWizard() {
       .then(({ data: rows }) => {
         const set = new Set<string>();
         (rows ?? []).forEach((r: any) => {
-          // r.hora vem como "HH:MM:SS"
           set.add(String(r.hora).slice(0, 5));
         });
         setOcupados(set);
       });
   }, [prof, data]);
+
+  // Conflito do próprio cliente em outra profissional, mesma data/hora
+  useEffect(() => {
+    if (!data || !nome.trim()) {
+      setConflitosCliente(new Set());
+      return;
+    }
+    supabase
+      .from("agendamentos")
+      .select("hora")
+      .eq("data", data)
+      .ilike("cliente_nome", nome.trim())
+      .then(({ data: rows }) => {
+        const set = new Set<string>();
+        (rows ?? []).forEach((r: any) => set.add(String(r.hora).slice(0, 5)));
+        setConflitosCliente(set);
+      });
+  }, [data, nome]);
 
   async function confirmar() {
     if (!prof || !servico || !data || !hora || !nome || !telefone) {

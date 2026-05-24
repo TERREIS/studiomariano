@@ -3,6 +3,15 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { addAppointment, ensurePermission } from "@/lib/notifications";
 import { toast } from "sonner";
+import profPaula from "@/assets/prof-paula.jpg";
+import profSandra from "@/assets/prof-sandra.jpg";
+import profFernanda from "@/assets/prof-fernanda.jpg";
+
+const PROF_FOTOS: Record<string, { foto: string; area: string }> = {
+  "sandra-mariano": { foto: profSandra, area: "Cabeleireira — cortes, coloração, progressiva e tratamentos capilares" },
+  "fernanda-rezende": { foto: profFernanda, area: "Cabeleireira & terapeuta — massagem relaxante, manicure, pedicure e serviços capilares (exceto corte)" },
+  "paula-goncalves": { foto: profPaula, area: "Manicure & pedicure — cuidado completo para mãos e pés" },
+};
 
 export const Route = createFileRoute("/agendar/cliente")({
   head: () => ({
@@ -230,23 +239,42 @@ function ClienteWizard() {
             <p className="mb-8 text-sm font-light text-stone-600">
               Cada uma com sua especialidade.
             </p>
-            <div className="grid gap-4 md:grid-cols-3">
-              {profs.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => {
-                    setProf(p);
-                    setStep(2);
-                  }}
-                  className="group border border-brand-charcoal/10 bg-white p-6 text-left transition-all hover:border-brand-gold hover:shadow-lg"
-                >
-                  <h3 className="font-serif text-xl">{p.nome}</h3>
-                  <p className="mt-3 text-sm font-light text-stone-600">{p.descricao}</p>
-                  <span className="mt-6 inline-block text-xs font-semibold uppercase tracking-widest text-brand-gold">
-                    Escolher →
-                  </span>
-                </button>
-              ))}
+            <div className="grid gap-5 md:grid-cols-3">
+              {profs.map((p) => {
+                const meta = PROF_FOTOS[p.slug];
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      setProf(p);
+                      setStep(2);
+                    }}
+                    className="group overflow-hidden border border-brand-charcoal/10 bg-white text-left transition-all hover:border-brand-gold hover:shadow-lg"
+                  >
+                    {meta?.foto && (
+                      <div className="aspect-[4/5] overflow-hidden bg-stone-100">
+                        <img
+                          src={meta.foto}
+                          alt={p.nome}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      <h3 className="font-serif text-xl">{p.nome}</h3>
+                      <p className="mt-1 text-[11px] font-semibold uppercase tracking-widest text-brand-gold">
+                        {meta?.area.split(" — ")[0] ?? "Profissional"}
+                      </p>
+                      <p className="mt-3 text-sm font-light text-stone-600">
+                        {meta?.area.split(" — ")[1] ?? p.descricao}
+                      </p>
+                      <span className="mt-5 inline-block text-xs font-semibold uppercase tracking-widest text-brand-charcoal group-hover:text-brand-gold">
+                        Escolher →
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}

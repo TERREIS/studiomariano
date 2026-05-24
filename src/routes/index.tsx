@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import heroImage from "@/assets/gallery-7.jpg";
 import gallery1 from "@/assets/gallery-1.jpg";
 import gallery2 from "@/assets/gallery-2.jpg";
@@ -80,14 +80,12 @@ function Index() {
           <a href="#galeria" className="transition-colors hover:text-brand-gold">Galeria</a>
           <a href="#contato" className="transition-colors hover:text-brand-gold">Contato</a>
         </div>
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/agendar"
           className="bg-brand-charcoal px-5 py-3 text-[10px] uppercase tracking-widest text-brand-cream transition-colors hover:bg-brand-gold md:text-xs"
         >
           Agendar
-        </a>
+        </Link>
       </nav>
 
       {/* Hero */}
@@ -112,17 +110,15 @@ function Index() {
             <p className="mb-10 max-w-md text-base font-light leading-relaxed opacity-90 md:text-lg">
               Experiências personalizadas de estética, beleza e bem-estar no coração de Guaratinguetá.
             </p>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/agendar"
               className="group inline-flex items-center gap-4 bg-brand-gold px-8 py-5 text-white transition-all hover:bg-white hover:text-brand-charcoal md:px-10"
             >
               <span className="text-xs font-semibold uppercase tracking-widest md:text-sm">
-                Agendar pelo WhatsApp
+                Agendar online
               </span>
               <span className="text-xl transition-transform group-hover:translate-x-1">→</span>
-            </a>
+            </Link>
           </div>
         </div>
       </section>

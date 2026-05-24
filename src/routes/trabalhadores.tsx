@@ -23,36 +23,40 @@ type Agendamento = {
   status: string;
   observacoes: string | null;
   profissional_id: string;
-  profissionais?: { nome: string };
 };
+
+type Sessao = { nome: string; slug: string };
 
 function Painel() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [autorizado, setAutorizado] = useState(false);
+  const [sessao, setSessao] = useState<Sessao | null>(null);
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
 
   useEffect(() => {
+    const raw = sessionStorage.getItem("studio-mariano-equipe");
+    if (!raw) {
+      navigate({ to: "/login" });
+      return;
+    }
+    const ses = JSON.parse(raw) as Sessao;
+    setSessao(ses);
+
     (async () => {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session.session) {
-        navigate({ to: "/login" });
+      const { data: prof, error: pErr } = await supabase
+        .from("profissionais")
+        .select("id")
+        .eq("slug", ses.slug)
+        .maybeSingle();
+      if (pErr || !prof) {
+        toast.error("Profissional não encontrada.");
+        setLoading(false);
         return;
       }
-      const uid = session.session.user.id;
-      // Tem role trabalhador ou admin?
-      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
-      const ok = (roles ?? []).some((r: any) => r.role === "trabalhador" || r.role === "admin");
-      if (!ok) {
-        toast.error("Sua conta não tem permissão. Peça à administradora para liberar.");
-        await supabase.auth.signOut();
-        navigate({ to: "/login" });
-        return;
-      }
-      setAutorizado(true);
       const { data, error } = await supabase
         .from("agendamentos")
-        .select("*, profissionais(nome)")
+        .select("*")
+        .eq("profissional_id", prof.id)
         .gte("data", new Date().toISOString().slice(0, 10))
         .order("data")
         .order("hora");
@@ -62,8 +66,8 @@ function Painel() {
     })();
   }, [navigate]);
 
-  async function sair() {
-    await supabase.auth.signOut();
+  function sair() {
+    sessionStorage.removeItem("studio-mariano-equipe");
     navigate({ to: "/" });
   }
 
@@ -75,7 +79,7 @@ function Painel() {
     );
   }
 
-  if (!autorizado) return null;
+  if (!sessao) return null;
 
   return (
     <div className="min-h-screen bg-brand-cream text-brand-charcoal">
@@ -87,10 +91,12 @@ function Painel() {
       </nav>
 
       <section className="container mx-auto max-w-5xl px-6 py-12 md:px-8">
-        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-gold">Painel</span>
-        <h1 className="mt-3 font-serif text-4xl md:text-5xl">Próximos agendamentos</h1>
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-gold">
+          Olá, {sessao.nome.split(" ")[0]}
+        </span>
+        <h1 className="mt-3 font-serif text-4xl md:text-5xl">Sua agenda</h1>
         <p className="mt-3 text-sm font-light text-stone-600">
-          Em breve mais funções nesta área.
+          Próximos agendamentos confirmados pelos clientes.
         </p>
 
         <div className="mt-10 space-y-3">
@@ -102,7 +108,7 @@ function Painel() {
             return (
               <div
                 key={a.id}
-                className="grid items-center gap-4 border border-brand-charcoal/10 bg-white p-5 md:grid-cols-5"
+                className="grid items-center gap-4 border border-brand-charcoal/10 bg-white p-5 md:grid-cols-4"
               >
                 <div>
                   <p className="text-xs uppercase tracking-widest text-brand-gold">
@@ -118,12 +124,11 @@ function Painel() {
                   </a>
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-widest text-stone-400">Profissional</p>
-                  <p className="font-medium">{a.profissionais?.nome ?? "—"}</p>
-                </div>
-                <div>
                   <p className="text-xs uppercase tracking-widest text-stone-400">Serviço</p>
                   <p className="font-medium">{a.servico}</p>
+                  {a.observacoes && (
+                    <p className="mt-1 text-xs text-stone-500">{a.observacoes}</p>
+                  )}
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-widest text-stone-400">Status</p>

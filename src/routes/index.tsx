@@ -1,8 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import heroImage from "@/assets/hero.jpg";
-import serviceHair from "@/assets/service-hair.jpg";
-import serviceNails from "@/assets/service-nails.jpg";
-import serviceFacial from "@/assets/service-facial.jpg";
+import heroImage from "@/assets/gallery-7.jpg";
+import gallery1 from "@/assets/gallery-1.jpg";
+import gallery2 from "@/assets/gallery-2.jpg";
+import gallery3 from "@/assets/gallery-3.jpg";
+import gallery4 from "@/assets/gallery-4.jpg";
+import gallery5 from "@/assets/gallery-5.jpg";
+import gallery6 from "@/assets/gallery-6.jpg";
+import gallery8 from "@/assets/gallery-8.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -11,13 +15,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Studio Mariano: estética, cabelo, unhas, sobrancelha, depilação e maquiagem em Guaratinguetá. Jardim Rony. Agende pelo WhatsApp (12) 3197-0064.",
+          "Studio Mariano: cabelo, maquiagem, massagem relaxante, unhas, sobrancelha e depilação em Guaratinguetá. Jardim Rony. Agende pelo WhatsApp (12) 3197-0064.",
       },
       { property: "og:title", content: "Studio Mariano — Estética & Beleza em Guaratinguetá" },
       {
         property: "og:description",
         content:
-          "Experiências personalizadas de estética e bem-estar no coração de Guaratinguetá.",
+          "Experiências personalizadas de estética, beleza e bem-estar no coração de Guaratinguetá.",
       },
       { property: "og:type", content: "website" },
     ],
@@ -33,25 +37,33 @@ const MAPS_URL =
 const services = [
   {
     title: "Cabelo & Cor",
-    description: "Cortes, coloração e tratamentos capilares sob medida.",
-    image: serviceHair,
+    description: "Cortes, coloração, mechas e tratamentos capilares sob medida.",
+    image: gallery5,
   },
   {
-    title: "Manicure & Pedicure",
-    description: "Design de unhas e spa para mãos e pés.",
-    image: serviceNails,
+    title: "Maquiagem",
+    description: "Produções para noivas, eventos e ocasiões especiais.",
+    image: gallery2,
   },
   {
-    title: "Estética Facial",
-    description: "Limpeza de pele, hidratação e peelings.",
-    image: serviceFacial,
+    title: "Massagem Relaxante",
+    description: "Uma pausa de bem-estar para relaxar corpo e mente com toque terapêutico.",
+    image: gallery3,
   },
 ];
 
 const otherServices = [
+  { title: "Estética Facial", description: "Limpeza de pele, hidratação e cuidados personalizados." },
+  { title: "Manicure & Pedicure", description: "Design de unhas e spa para mãos e pés." },
   { title: "Depilação", description: "Métodos suaves para uma pele sedosa." },
   { title: "Sobrancelha", description: "Design estratégico para harmonizar seu olhar." },
-  { title: "Maquiagem", description: "Produções para eventos e ocasiões especiais." },
+];
+
+const galleryImages = [
+  { src: gallery1, alt: "Cabelo loiro com mechas iluminadas" },
+  { src: gallery6, alt: "Coloração com reflexos dourados" },
+  { src: gallery8, alt: "Corte bob alinhado e brilhoso" },
+  { src: gallery4, alt: "Corte masculino moderno" },
 ];
 
 function Index() {
@@ -65,6 +77,7 @@ function Index() {
         <div className="hidden gap-8 text-xs font-medium uppercase tracking-[0.2em] md:flex">
           <a href="#sobre" className="transition-colors hover:text-brand-gold">Sobre</a>
           <a href="#servicos" className="transition-colors hover:text-brand-gold">Serviços</a>
+          <a href="#galeria" className="transition-colors hover:text-brand-gold">Galeria</a>
           <a href="#contato" className="transition-colors hover:text-brand-gold">Contato</a>
         </div>
         <a
@@ -82,12 +95,12 @@ function Index() {
         <div className="absolute inset-0 z-0">
           <img
             src={heroImage}
-            alt="Interior elegante do Studio Mariano"
+            alt="Cliente do Studio Mariano com maquiagem e penteado de noiva"
             width={1920}
             height={1080}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-brand-charcoal/35" />
+          <div className="absolute inset-0 bg-brand-charcoal/40" />
         </div>
 
         <div className="container relative z-10 mx-auto px-6 md:px-8">
@@ -97,7 +110,7 @@ function Index() {
               <i className="font-normal italic">beleza essencial</i>
             </h1>
             <p className="mb-10 max-w-md text-base font-light leading-relaxed opacity-90 md:text-lg">
-              Experiências personalizadas de estética e bem-estar no coração de Guaratinguetá.
+              Experiências personalizadas de estética, beleza e bem-estar no coração de Guaratinguetá.
             </p>
             <a
               href={WHATSAPP_URL}
@@ -127,7 +140,8 @@ function Index() {
             <p className="mt-6 max-w-lg text-base font-light leading-relaxed text-stone-600">
               No Studio Mariano cada atendimento é pensado para realçar sua identidade
               com técnica, carinho e produtos de alta performance. Um espaço sereno,
-              acolhedor e dedicado ao seu bem-estar.
+              acolhedor e dedicado ao seu bem-estar — incluindo uma deliciosa massagem
+              relaxante para desacelerar a rotina.
             </p>
             <p className="mt-4 max-w-lg text-base font-light leading-relaxed text-stone-600">
               Aberto de segunda a sábado, das 8h às 21h, com horários flexíveis para se
@@ -136,16 +150,16 @@ function Index() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <img
-              src={serviceFacial}
-              alt="Produtos de estética"
+              src={gallery1}
+              alt="Cabelo finalizado no Studio Mariano"
               width={800}
               height={1000}
               loading="lazy"
               className="aspect-[4/5] w-full object-cover"
             />
             <img
-              src={serviceHair}
-              alt="Cabelo finalizado"
+              src={gallery6}
+              alt="Coloração com mechas iluminadas"
               width={800}
               height={1000}
               loading="lazy"
@@ -188,11 +202,35 @@ function Index() {
           ))}
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-12 border-t border-brand-charcoal/10 pt-16 md:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-12 border-t border-brand-charcoal/10 pt-16 md:grid-cols-4">
           {otherServices.map((s) => (
             <div key={s.title}>
               <h4 className="mb-3 font-serif text-xl">{s.title}</h4>
               <p className="text-sm font-light text-stone-600">{s.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Galeria */}
+      <section id="galeria" className="container mx-auto px-6 py-24 md:px-8">
+        <div className="mb-12">
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-gold">
+            Portfólio
+          </span>
+          <h2 className="mt-4 font-serif text-4xl md:text-5xl">Trabalhos do estúdio</h2>
+        </div>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+          {galleryImages.map((g) => (
+            <div key={g.src} className="aspect-[4/5] overflow-hidden bg-stone-100">
+              <img
+                src={g.src}
+                alt={g.alt}
+                width={800}
+                height={1000}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+              />
             </div>
           ))}
         </div>

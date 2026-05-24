@@ -3,6 +3,15 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { addAppointment, ensurePermission } from "@/lib/notifications";
 import { toast } from "sonner";
+import profPaula from "@/assets/prof-paula.jpg";
+import profSandra from "@/assets/prof-sandra.jpg";
+import profFernanda from "@/assets/prof-fernanda.jpg";
+
+const PROF_FOTOS: Record<string, { foto: string; area: string }> = {
+  "sandra-mariano": { foto: profSandra, area: "Cabeleireira — cortes, coloração, progressiva e tratamentos capilares" },
+  "fernanda-rezende": { foto: profFernanda, area: "Cabeleireira & terapeuta — massagem relaxante, manicure, pedicure e serviços capilares (exceto corte)" },
+  "paula-goncalves": { foto: profPaula, area: "Manicure & pedicure — cuidado completo para mãos e pés" },
+};
 
 export const Route = createFileRoute("/agendar/cliente")({
   head: () => ({

@@ -7,6 +7,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
+import { NotificationBoot } from "@/components/NotificationBoot";
 
 import appCss from "../styles.css?url";
 
@@ -117,7 +119,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <NotificationBoot />
       <Outlet />
+      <Toaster />
     </QueryClientProvider>
   );
 }

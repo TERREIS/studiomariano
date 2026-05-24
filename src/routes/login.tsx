@@ -1,6 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -13,21 +12,32 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+// Credenciais fixas da equipe (nome → { slug, senha })
+const EQUIPE: Record<string, { slug: string; senha: string }> = {
+  "Paula Gonçalves": { slug: "paula-goncalves", senha: "Soupaula01" },
+  "Sandra Mariano": { slug: "sandra-mariano", senha: "Sousandra02" },
+  "Fernanda Rezende": { slug: "fernanda-rezende", senha: "Soufernanda03" },
+};
+
 function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
-    setLoading(false);
-    if (error) {
-      toast.error("Credenciais inválidas");
+    const conta = EQUIPE[nome];
+    if (!conta || conta.senha !== senha) {
+      setLoading(false);
+      toast.error("Nome ou senha incorretos.");
       return;
     }
+    sessionStorage.setItem(
+      "studio-mariano-equipe",
+      JSON.stringify({ nome, slug: conta.slug }),
+    );
     navigate({ to: "/trabalhadores" });
   }
 
@@ -45,18 +55,21 @@ function LoginPage() {
           </span>
           <h1 className="mt-4 font-serif text-4xl">Acesso da equipe</h1>
           <p className="mt-3 text-sm font-light text-stone-600">
-            Entre com suas credenciais cadastradas para ver sua agenda.
+            Selecione seu nome e digite sua senha para ver sua agenda.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 grid gap-4">
-            <input
-              type="email"
+            <select
               required
-              placeholder="E-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
               className="border border-brand-charcoal/15 bg-white px-4 py-3 text-sm focus:border-brand-gold focus:outline-none"
-            />
+            >
+              <option value="">Selecione seu nome…</option>
+              {Object.keys(EQUIPE).map((n) => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
             <input
               type="password"
               required
@@ -75,7 +88,7 @@ function LoginPage() {
           </form>
 
           <p className="mt-6 text-xs text-stone-500">
-            Não tem acesso? Fale com a administradora do estúdio.
+            Esqueceu a senha? Fale com a administradora do estúdio.
           </p>
         </div>
       </section>

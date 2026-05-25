@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrabalhadoresRouteImport } from './routes/trabalhadores'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgendarIndexRouteImport } from './routes/agendar.index'
 import { Route as AgendarClienteRouteImport } from './routes/agendar.cliente'
@@ -23,6 +24,11 @@ const TrabalhadoresRoute = TrabalhadoresRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadastroRoute = CadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,6 +49,7 @@ const AgendarClienteRoute = AgendarClienteRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/trabalhadores': typeof TrabalhadoresRoute
   '/agendar/cliente': typeof AgendarClienteRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/trabalhadores': typeof TrabalhadoresRoute
   '/agendar/cliente': typeof AgendarClienteRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/trabalhadores': typeof TrabalhadoresRoute
   '/agendar/cliente': typeof AgendarClienteRoute
@@ -67,15 +76,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cadastro'
     | '/login'
     | '/trabalhadores'
     | '/agendar/cliente'
     | '/agendar/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/trabalhadores' | '/agendar/cliente' | '/agendar'
+  to:
+    | '/'
+    | '/cadastro'
+    | '/login'
+    | '/trabalhadores'
+    | '/agendar/cliente'
+    | '/agendar'
   id:
     | '__root__'
     | '/'
+    | '/cadastro'
     | '/login'
     | '/trabalhadores'
     | '/agendar/cliente'
@@ -84,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CadastroRoute: typeof CadastroRoute
   LoginRoute: typeof LoginRoute
   TrabalhadoresRoute: typeof TrabalhadoresRoute
   AgendarClienteRoute: typeof AgendarClienteRoute
@@ -104,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadastro': {
+      id: '/cadastro'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof CadastroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -132,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CadastroRoute: CadastroRoute,
   LoginRoute: LoginRoute,
   TrabalhadoresRoute: TrabalhadoresRoute,
   AgendarClienteRoute: AgendarClienteRoute,
@@ -140,3 +166,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -1,8 +1,4 @@
 {
-  "framework": "tanstack-start",
-  "buildCommand": "bun run build",
-  "installCommand": "bun install --frozen-lockfile",
-  "outputDirectory": ".vercel/output",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

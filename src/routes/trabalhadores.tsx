@@ -42,6 +42,8 @@ function Painel() {
     const ses = JSON.parse(raw) as Sessao;
     setSessao(ses);
 
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
     (async () => {
       const { data: prof, error: pErr } = await supabase
         .from("profissionais")
@@ -53,17 +55,65 @@ function Painel() {
         setLoading(false);
         return;
       }
+      const profissionalId = prof.id;
       const { data, error } = await supabase
         .from("agendamentos")
         .select("*")
-        .eq("profissional_id", prof.id)
+        .eq("profissional_id", profissionalId)
         .gte("data", new Date().toISOString().slice(0, 10))
         .order("data")
         .order("hora");
       if (error) toast.error("Erro ao carregar agenda");
       setAgendamentos((data ?? []) as Agendamento[]);
       setLoading(false);
+
+      // Permissão de notificação do navegador
+      if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+
+      // Realtime: novos agendamentos para esta profissional
+      channel = supabase
+        .channel(`agenda-${profissionalId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "agendamentos",
+            filter: `profissional_id=eq.${profissionalId}`,
+          },
+          (payload) => {
+            const novo = payload.new as Agendamento;
+            setAgendamentos((prev) => {
+              const lista = [...prev, novo];
+              lista.sort((a, b) =>
+                a.data === b.data ? a.hora.localeCompare(b.hora) : a.data.localeCompare(b.data),
+              );
+              return lista;
+            });
+            const dt = new Date(`${novo.data}T${novo.hora}`);
+            const quando = dt.toLocaleDateString("pt-BR", {
+              weekday: "short",
+              day: "2-digit",
+              month: "short",
+            });
+            const msg = `${novo.cliente_nome} agendou ${novo.servico} • ${quando} às ${novo.hora.slice(0, 5)}`;
+            toast.success("Novo agendamento!", { description: msg });
+            if ("Notification" in window && Notification.permission === "granted") {
+              new Notification("Novo agendamento — Studio Mariano", {
+                body: msg,
+                icon: "/favicon.ico",
+              });
+            }
+          },
+        )
+        .subscribe();
     })();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
   }, [navigate]);
 
   function sair() {

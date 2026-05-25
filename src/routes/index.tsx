@@ -71,6 +71,30 @@ const galleryImages = [
 ];
 
 function Index() {
+  const { user, loading: authLoading, nome } = useClienteAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [entrando, setEntrando] = useState(false);
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setEntrando(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    setEntrando(false);
+    if (error) {
+      toast.error("E-mail ou senha incorretos. Se ainda não tem conta, cadastre-se.");
+      return;
+    }
+    toast.success("Bem-vindo de volta!");
+    navigate({ to: "/agendar/cliente" });
+  }
+
+  async function sair() {
+    await supabase.auth.signOut();
+    toast.success("Você saiu da sua conta.");
+  }
+
   return (
     <div className="bg-brand-cream text-brand-charcoal">
       {/* Navigation */}

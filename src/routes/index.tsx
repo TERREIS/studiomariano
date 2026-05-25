@@ -107,6 +107,81 @@ function Index() {
 
   return (
     <div className="bg-brand-cream text-brand-charcoal">
+      {/* Floating action bubbles */}
+      <div className="fixed right-4 top-1/2 z-50 flex -translate-y-1/2 flex-col gap-3">
+        <a
+          href={MAPS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir localização no Google Maps"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand-charcoal shadow-lg ring-1 ring-brand-charcoal/10 transition-transform hover:scale-110 hover:bg-brand-gold hover:text-white"
+        >
+          <MapPin className="h-5 w-5" />
+        </a>
+        <a
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir Instagram"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand-charcoal shadow-lg ring-1 ring-brand-charcoal/10 transition-transform hover:scale-110 hover:bg-brand-gold hover:text-white"
+        >
+          <Instagram className="h-5 w-5" />
+        </a>
+        <button
+          type="button"
+          onClick={() => setWaOpen((v) => !v)}
+          aria-label="Falar no WhatsApp com a equipe"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg ring-1 ring-black/10 transition-transform hover:scale-110"
+        >
+          <MessageCircle className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* WhatsApp team panel */}
+      {waOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={() => setWaOpen(false)}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm rounded-lg bg-white p-6 shadow-2xl"
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="font-serif text-xl">Fale com a equipe</h3>
+              <button
+                type="button"
+                onClick={() => setWaOpen(false)}
+                className="text-stone-500 hover:text-brand-charcoal"
+                aria-label="Fechar"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <ul className="space-y-3">
+              {equipeWhats.map((p) => (
+                <li key={p.numero} className="rounded-md border border-brand-charcoal/10 p-3">
+                  <p className="font-semibold text-brand-charcoal">{p.nome}</p>
+                  <a
+                    href={`https://wa.me/${p.numero}?text=${MSG_WA}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-sm text-brand-gold hover:underline"
+                  >
+                    {p.display}
+                  </a>
+                  <a
+                    href={`https://wa.me/${p.numero}?text=${MSG_WA}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-2 rounded-md bg-[#25D366] px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[#1ebe5d]"
+                  >
+                    <MessageCircle className="h-4 w-4" /> Abrir WhatsApp
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-brand-charcoal/5 bg-brand-cream/80 px-6 py-5 backdrop-blur-md md:px-8">
         <div className="flex items-center gap-3">

@@ -85,6 +85,7 @@ function Index() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [entrando, setEntrando] = useState(false);
+  const [waOpen, setWaOpen] = useState(false);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();

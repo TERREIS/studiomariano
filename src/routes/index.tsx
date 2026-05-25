@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { MapPin, Instagram, MessageCircle, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useClienteAuth } from "@/lib/cliente-auth";
 import { toast } from "sonner";
+import logoStudio from "@/assets/logo-studio-mariano.jpg";
 import heroImage from "@/assets/gallery-7.jpg";
 import gallery1 from "@/assets/gallery-1.jpg";
 import gallery2 from "@/assets/gallery-2.jpg";
@@ -11,6 +13,13 @@ import gallery4 from "@/assets/gallery-4.jpg";
 import gallery5 from "@/assets/gallery-5.jpg";
 import gallery6 from "@/assets/gallery-6.jpg";
 import gallery8 from "@/assets/gallery-8.jpg";
+
+const MSG_WA = encodeURIComponent("Olá, tudo bem? Quero fazer minha agenda via whatsapp");
+const equipeWhats = [
+  { nome: "Paula Gonçalves", numero: "5512996088802", display: "+55 12 99608-8802" },
+  { nome: "Sandra Mariano", numero: "5512991066295", display: "+55 12 99106-6295" },
+  { nome: "Fernanda Rezende", numero: "5512992490274", display: "12 99249-0274" },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({

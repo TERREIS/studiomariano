@@ -200,10 +200,27 @@ function ClienteWizard() {
     setStep(4);
   }
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-brand-cream">
         <p className="font-serif text-2xl">Carregando…</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-brand-cream px-6 text-center">
+        <h2 className="font-serif text-3xl">Faça login para agendar</h2>
+        <p className="mt-3 text-sm font-light text-stone-600">
+          Você precisa estar logado para reservar um horário.
+        </p>
+        <button
+          onClick={() => navigate({ to: "/" })}
+          className="mt-6 bg-brand-charcoal px-6 py-4 text-xs font-semibold uppercase tracking-widest text-brand-cream hover:bg-brand-gold"
+        >
+          Ir para login
+        </button>
       </div>
     );
   }
@@ -220,30 +237,8 @@ function ClienteWizard() {
       </nav>
 
       <section className="container mx-auto max-w-4xl px-6 py-12 md:px-8 md:py-20">
-        {!nome.trim() ? (
-          <div className="mx-auto max-w-lg">
-            <h2 className="mb-3 font-serif text-3xl md:text-4xl">Bem-vinda(o)</h2>
-            <p className="mb-8 text-sm font-light text-stone-600">
-              Antes de começar, nos diga seu nome completo. Usamos para confirmar seu agendamento.
-            </p>
-            <input
-              autoFocus
-              placeholder="Nome completo"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              className="w-full border border-brand-charcoal/15 bg-white px-4 py-3 text-sm focus:border-brand-gold focus:outline-none"
-            />
-            <button
-              disabled={nome.trim().split(/\s+/).length < 2}
-              onClick={() => setStep(1)}
-              className="mt-6 w-full bg-brand-charcoal px-6 py-4 text-xs font-semibold uppercase tracking-widest text-brand-cream transition-colors hover:bg-brand-gold disabled:cursor-not-allowed disabled:opacity-30"
-            >
-              Continuar →
-            </button>
-            <p className="mt-3 text-[11px] text-stone-500">Informe nome e sobrenome.</p>
-          </div>
-        ) : (
         <>
+
         {/* Stepper */}
         <div className="mb-12 flex items-center justify-between">
           {["Profissional", "Serviço", "Horário", "Dados"].map((label, i) => {

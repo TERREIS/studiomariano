@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { addAppointment, ensurePermission } from "@/lib/notifications";
+import { useClienteAuth } from "@/lib/cliente-auth";
 import { toast } from "sonner";
 import profPaula from "@/assets/prof-paula.jpg";
 import profSandra from "@/assets/prof-sandra.jpg";

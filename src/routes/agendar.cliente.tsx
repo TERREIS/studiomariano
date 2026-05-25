@@ -237,7 +237,8 @@ function ClienteWizard() {
       </nav>
 
       <section className="container mx-auto max-w-4xl px-6 py-12 md:px-8 md:py-20">
-        <>
+
+
 
         {/* Stepper */}
         <div className="mb-12 flex items-center justify-between">
@@ -475,7 +476,7 @@ function ClienteWizard() {
             </div>
           </div>
         )}
-        </>
+        
       </section>
 
     </div>

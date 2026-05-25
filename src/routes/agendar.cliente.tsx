@@ -481,8 +481,3 @@ function ClienteWizard() {
     </div>
   );
 }
-      </section>
-
-    </div>
-  );
-}

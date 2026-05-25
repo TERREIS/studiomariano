@@ -17,7 +17,7 @@ export type Database = {
       agendamentos: {
         Row: {
           cliente_nome: string
-          cliente_telefone: string
+          cliente_telefone: string | null
           created_at: string
           data: string
           hora: string
@@ -29,7 +29,7 @@ export type Database = {
         }
         Insert: {
           cliente_nome: string
-          cliente_telefone: string
+          cliente_telefone?: string | null
           created_at?: string
           data: string
           hora: string
@@ -41,7 +41,7 @@ export type Database = {
         }
         Update: {
           cliente_nome?: string
-          cliente_telefone?: string
+          cliente_telefone?: string | null
           created_at?: string
           data?: string
           hora?: string

@@ -109,9 +109,18 @@ function Index() {
     <div className="bg-brand-cream text-brand-charcoal">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-brand-charcoal/5 bg-brand-cream/80 px-6 py-5 backdrop-blur-md md:px-8">
-        <span className="font-serif text-xl tracking-tight uppercase md:text-2xl">
-          Studio Mariano
-        </span>
+        <div className="flex items-center gap-3">
+          <img
+            src={logoStudio}
+            alt="Logo Studio Mariano"
+            width={40}
+            height={40}
+            className="h-9 w-9 rounded-full object-cover md:h-10 md:w-10"
+          />
+          <span className="font-serif text-xl tracking-tight uppercase md:text-2xl">
+            Studio Mariano
+          </span>
+        </div>
         <div className="hidden gap-8 text-xs font-medium uppercase tracking-[0.2em] md:flex">
           <a href="#sobre" className="transition-colors hover:text-brand-gold">Sobre</a>
           <a href="#servicos" className="transition-colors hover:text-brand-gold">Serviços</a>

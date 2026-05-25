@@ -84,6 +84,8 @@ function buildDays(): { iso: string; label: string; weekday: number }[] {
 }
 
 function ClienteWizard() {
+  const { user, loading: authLoading, nome: nomeAuth } = useClienteAuth();
+  const navigate = useNavigate();
   const [profs, setProfs] = useState<Profissional[]>([]);
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
@@ -93,8 +95,7 @@ function ClienteWizard() {
   const [data, setData] = useState<string>("");
   const [hora, setHora] = useState<string>("");
 
-  const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
+  const nome = (nomeAuth || "").slice(0, 31);
   const [observacoes, setObservacoes] = useState("");
   const [enviando, setEnviando] = useState(false);
 

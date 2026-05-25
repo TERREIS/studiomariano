@@ -151,7 +151,7 @@ function ClienteWizard() {
   }, [data, nome]);
 
   async function confirmar() {
-    if (!prof || !servico || !data || !hora || !nome || !telefone) {
+    if (!prof || !servico || !data || !hora || !nome) {
       toast.error("Preencha todos os campos");
       return;
     }
@@ -164,7 +164,7 @@ function ClienteWizard() {
         data,
         hora,
         cliente_nome: nome,
-        cliente_telefone: telefone,
+        cliente_telefone: user?.email ?? "",
         observacoes: observacoes || null,
       })
       .select()

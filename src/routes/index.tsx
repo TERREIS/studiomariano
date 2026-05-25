@@ -108,13 +108,84 @@ function Index() {
           <a href="#galeria" className="transition-colors hover:text-brand-gold">Galeria</a>
           <a href="#contato" className="transition-colors hover:text-brand-gold">Contato</a>
         </div>
-        <Link
-          to="/agendar"
-          className="bg-brand-charcoal px-5 py-3 text-[10px] uppercase tracking-widest text-brand-cream transition-colors hover:bg-brand-gold md:text-xs"
-        >
-          Agendar
-        </Link>
+        {user ? (
+          <div className="flex items-center gap-3">
+            <span className="hidden text-xs uppercase tracking-widest text-stone-600 md:inline">
+              Olá, {nome.split(" ")[0]}
+            </span>
+            <Link
+              to="/agendar/cliente"
+              className="bg-brand-charcoal px-5 py-3 text-[10px] uppercase tracking-widest text-brand-cream transition-colors hover:bg-brand-gold md:text-xs"
+            >
+              Agendar
+            </Link>
+            <button onClick={sair} className="text-[10px] uppercase tracking-widest text-stone-500 hover:text-brand-gold md:text-xs">
+              Sair
+            </button>
+          </div>
+        ) : (
+          <Link
+            to="/agendar"
+            className="bg-brand-charcoal px-5 py-3 text-[10px] uppercase tracking-widest text-brand-cream transition-colors hover:bg-brand-gold md:text-xs"
+          >
+            Agendar
+          </Link>
+        )}
       </nav>
+
+      {/* Auth / Login section */}
+      {!authLoading && !user && (
+        <section className="border-b border-brand-charcoal/5 bg-white px-6 py-10 md:px-8">
+          <div className="container mx-auto grid max-w-4xl items-center gap-8 md:grid-cols-2">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-gold">
+                Acesse sua conta
+              </span>
+              <h2 className="mt-3 font-serif text-3xl md:text-4xl">Entrar para agendar</h2>
+              <p className="mt-3 text-sm font-light text-stone-600">
+                Faça login com seu e-mail e senha. Ainda não tem cadastro?{" "}
+                <Link to="/cadastro" className="font-semibold text-brand-gold hover:underline">
+                  Cadastre-se aqui
+                </Link>
+                .
+              </p>
+            </div>
+            <form onSubmit={handleLogin} className="grid gap-3">
+              <input
+                type="email"
+                required
+                placeholder="E-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border border-brand-charcoal/15 bg-white px-4 py-3 text-sm focus:border-brand-gold focus:outline-none"
+              />
+              <input
+                type="password"
+                required
+                placeholder="Senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                className="border border-brand-charcoal/15 bg-white px-4 py-3 text-sm focus:border-brand-gold focus:outline-none"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={entrando}
+                  className="flex-1 bg-brand-charcoal px-6 py-3 text-xs font-semibold uppercase tracking-widest text-brand-cream transition-colors hover:bg-brand-gold disabled:opacity-50"
+                >
+                  {entrando ? "Entrando…" : "Entrar"}
+                </button>
+                <Link
+                  to="/cadastro"
+                  className="border border-brand-charcoal/20 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-brand-charcoal transition-colors hover:border-brand-gold hover:text-brand-gold"
+                >
+                  Cadastrar
+                </Link>
+              </div>
+            </form>
+          </div>
+        </section>
+      )}
 
       {/* Hero */}
       <section className="relative flex h-[90vh] min-h-[560px] items-center overflow-hidden">
